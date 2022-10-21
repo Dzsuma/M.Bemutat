@@ -1,0 +1,49 @@
+1.Feladat.:
+------------------------------------------------------------------------------------------------
+CREATE DATABASE beiskolazas CHARSET UTF8;
+
+2.Feladat.:
+------------------------------------------------------------------------------------------------
+//Grafikus felületen beillesztettem először a tablak(at), majd az adatokat.
+
+3.Feladat.:
+------------------------------------------------------------------------------------------------
+ALTER TABLE jelentkezesek ADD CONSTRAINT
+fk_jel_diak FOREIGN KEY (diak) REFERENCES diakok (oktazon);
+
+ALTER TABLE jelentkezesek ADD CONSTRAINT
+fk_jel_tagozat FOREIGN KEY (tag) REFERENCES tagozatok (akod);
+
+4.Feladat.:
+------------------------------------------------------------------------------------------------
+UPDATE diakok
+SET diakok.kpmagy = '43'
+WHERE diakok.oktazon = 0143302;
+
+5.Feladat.:
+------------------------------------------------------------------------------------------------
+SELECT diakok.nev
+FROM diakok
+WHERE `kpmagy` = 50 AND `kpmat` = 50 AND `hozott` >= 40;
+
+6.Feladat.:
+------------------------------------------------------------------------------------------------
+SELECT tagozatok.agazat, COUNT(jelentkezesek.diak)AS "jelentkezoszam", MAX(`hozott`) - MIN(`hozott`)AS "terjedelem" 
+FROM tagozatok 
+INNER JOIN jelentkezesek ON tagozatok.akod = jelentkezesek.tag 
+INNER JOIN diakok ON jelentkezesek.diak = diakok.oktazon
+WHERE tagozatok.nyek = 1 AND jelentkezesek.hely = 1
+GROUP BY tagozatok.agazat
+ORDER BY COUNT(jelentkezesek.diak) DESC;
+/*Nem muszály INNER JOIN mivel már megvannak a kapcsolatok a táblák között.(Kövi feladat)*/
+
+7.Feladat.:
+------------------------------------------------------------------------------------------------
+SELECT diakok.nev, tagozatok.agazat, tagozatok.nyek, jelentkezesek.hely,
+(diakok.kpmagy + diakok.kpmat + diakok.hozott*2) AS "osszpont"
+FROM diakok, tagozatok, jelentkezesek
+WHERE tagozatok.akod = jelentkezesek.tag 
+AND jelentkezesek.diak = diakok.oktazon
+ORDER BY tagozatok.agazat ASC, osszpont DESC, jelentkezesek.hely ASC;
+
+(http://localhost/phpmyadmin/index.php?route=/database/structure&server=1&db=beisklazas)
